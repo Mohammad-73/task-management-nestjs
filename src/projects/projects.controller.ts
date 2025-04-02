@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import ProjectStatusEnum from './enums/project-status-enum';
 
 @Controller('projects')
 export class ProjectsController {
@@ -21,8 +23,8 @@ export class ProjectsController {
   }
 
   @Get()
-  findAll() {
-    return this.projectsService.findAll();
+  findAll(@Query('status') status?: ProjectStatusEnum) {
+    return this.projectsService.findAll(status);
   }
 
   @Get(':id')
