@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Post,
+  Put,
   Query,
 } from '@nestjs/common';
-import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import ProjectStatusEnum from './enums/project-status-enum';
+import { ProjectsService } from './projects.service';
 
 @Controller('projects')
 export class ProjectsController {
@@ -36,7 +36,7 @@ export class ProjectsController {
     return this.projectsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
     return this.projectsService.update(+id, updateProjectDto);
   }
