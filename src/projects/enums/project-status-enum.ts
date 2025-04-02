@@ -1,6 +1,6 @@
 enum ProjectStatusEnum {
-  Enable = 1,
-  Disable = 0,
+  Enable = 'enable',
+  Disable = 'disable',
 }
 
 export default ProjectStatusEnum;
