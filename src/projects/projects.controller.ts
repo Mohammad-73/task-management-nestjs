@@ -21,8 +21,16 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
-    return this.projectsService.create(createProjectDto);
+  async create(
+    @Body() createProjectDto: CreateProjectDto,
+    @Res() res: Response,
+  ) {
+    const createdProject = await this.projectsService.create(createProjectDto);
+    return res.status(HttpStatus.CREATED).json({
+      statusCode: HttpStatus.CREATED,
+      data: createdProject,
+      message: 'Project was created successfully!',
+    });
   }
 
   @Get()
@@ -36,22 +44,41 @@ export class ProjectsController {
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: projects,
-      message: 'Projects found!',
+      message: 'List of projects!',
     });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectsService.findOne(+id);
+  async findOne(@Res() res: Response, @Param('id') id: string) {
+    const project = await this.projectsService.findOne(+id);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: project,
+      message: 'Project is found!',
+    });
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(+id, updateProjectDto);
+  async update(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Body() updateProjectDto: UpdateProjectDto,
+  ) {
+    await this.projectsService.update(+id, updateProjectDto);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: null,
+      message: 'Project was updated successfully!',
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projectsService.remove(+id);
+  async remove(@Res() res: Response, @Param('id') id: string) {
+    await this.projectsService.remove(+id);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: null,
+      message: 'Project was deleted successfully!',
+    });
   }
 }
