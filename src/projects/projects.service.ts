@@ -20,8 +20,9 @@ export class ProjectsService {
     }
   }
 
-  findAll() {
-    return `This action returns all projects`;
+  async findAll() {
+    const query = this.projectRepository.createQueryBuilder('projects');
+    return await query.getMany();
   }
 
   findOne(id: number) {
