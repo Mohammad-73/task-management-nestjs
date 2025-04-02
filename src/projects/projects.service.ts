@@ -66,7 +66,9 @@ export class ProjectsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async remove(id: number): Promise<void> {
+    const result = await this.projectRepository.delete(id);
+    if (result.affected === 0)
+      throw new NotFoundException(`Project #${id} is not found!`);
   }
 }
