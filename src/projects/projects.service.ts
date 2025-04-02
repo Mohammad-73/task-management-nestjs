@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +16,7 @@ export class ProjectsService {
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
   ) {}
+
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
     try {
       const newProject = this.projectRepository.create(createProjectDto);
@@ -37,8 +42,12 @@ export class ProjectsService {
     return await query.getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
+  async findOne(id: number) {
+    const project = await this.projectRepository.findOneBy({ id });
+
+    if (!project) throw new NotFoundException(`Project ${id} is not found!`);
+
+    return project;
   }
 
   update(id: number, updateProjectDto: UpdateProjectDto) {
