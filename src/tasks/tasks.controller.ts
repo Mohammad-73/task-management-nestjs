@@ -29,8 +29,13 @@ export class TasksController {
   }
 
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  async findAll(@Res() res: Response) {
+    const tasks = await this.tasksService.findAll();
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: tasks,
+      message: 'Tasks list!',
+    });
   }
 
   @Get(':id')
