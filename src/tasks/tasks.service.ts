@@ -28,8 +28,9 @@ export class TasksService {
     }
   }
 
-  findAll() {
-    return `This action returns all tasks`;
+  async findAll() {
+    const tasks = await this.taskRepository.find({ relations: ['project'] });
+    return tasks;
   }
 
   findOne(id: number) {
