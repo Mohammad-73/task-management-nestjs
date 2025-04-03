@@ -1,6 +1,7 @@
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MinLength,
@@ -21,4 +22,8 @@ export class CreateTaskDto {
   @IsEnum(TaskStatusEnum)
   @IsOptional()
   status: TaskStatusEnum;
+
+  @IsNotEmpty()
+  @IsNumber()
+  projectId: number;
 }
