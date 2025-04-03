@@ -1,11 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from './entities/task.entity';
+import { Repository } from 'typeorm';
+import { Project } from 'src/projects/entities/project.entity';
 
 @Injectable()
 export class TasksService {
-  create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+  constructor(
+    @InjectRepository(Task)
+    private readonly taskRepository: Repository<Task>,
+    @InjectRepository(Project)
+    private readonly projectRepository: Repository<Project>,
+  ) {}
+
+  async create(createTaskDto: CreateTaskDto) {
+    try {
+      const { projectId, ...taskData } = createTaskDto;
+      const project = await this.projectRepository.findOneByOrFail({
+        id: projectId,
+      });
+      const newTask = this.taskRepository.create({ ...taskData, project });
+      return await this.taskRepository.save(newTask);
+    } catch (error) {
+      throw new BadRequestException(`Error creating task ${error}`);
+    }
   }
 
   findAll() {
@@ -17,7 +37,7 @@ export class TasksService {
   }
 
   update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+    return `This action updates a #${id} task ${updateTaskDto.projectId}`;
   }
 
   remove(id: number) {
