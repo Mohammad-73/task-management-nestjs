@@ -33,13 +33,22 @@ export class TasksService {
     }
   }
 
-  async findAll(status?: TaskStatusEnum, limit: number = 10, page: number = 1) {
+  async findAll(
+    status?: TaskStatusEnum,
+    projectId?: number,
+    limit: number = 10,
+    page: number = 1,
+  ) {
     const query = this.taskRepository
       .createQueryBuilder('tasks')
       .leftJoinAndSelect('tasks.project', 'project');
 
     if (status) {
       query.where('tasks.status = :status', { status: status });
+    }
+
+    if (projectId) {
+      query.where('project.id = :projectId', { projectId });
     }
 
     query.skip((page - 1) * limit).take(limit);
